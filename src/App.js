@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 // import AppBar from "./layouts/AppBar.jsx";
 import SideBar from "./layouts/SideBar.jsx";
-import { List, ListItem, Switch, AppBar, CssBaseline } from "@material-ui/core";
+
+import { createBrowserHistory } from "history";
+import { Router, Route, Switch, Redirect } from "react-router-dom";
 import "typeface-roboto";
 import "./App.css";
 
@@ -13,10 +14,17 @@ class App extends Component {
       user: []
     };
   }
+
   render() {
+    const hist = createBrowserHistory();
     return (
       <div className="App">
-        <SideBar />
+        <Router history={hist}>
+          <SideBar />
+          <Switch>
+            <Redirect exact from="/" to="/home" />
+          </Switch>
+        </Router>
       </div>
     );
   }
