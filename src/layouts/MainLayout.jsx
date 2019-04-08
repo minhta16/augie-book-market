@@ -59,7 +59,7 @@ const styles = theme => ({
   }
 });
 
-class SideBar extends React.Component {
+class MainLayout extends React.Component {
   state = {
     mobileOpen: false
   };
@@ -136,7 +136,7 @@ class SideBar extends React.Component {
           <div className={classes.toolbar} />
           <Switch>
             {routes.map((prop, key) => (
-              <Route path={prop.path} component={prop.component} />
+              <Route key={key} path={prop.path} component={prop.component} />
             ))}
             <Route
               render={props => (
@@ -150,7 +150,7 @@ class SideBar extends React.Component {
   }
 }
 
-SideBar.propTypes = {
+MainLayout.propTypes = {
   classes: PropTypes.object.isRequired,
   // Injected by the documentation to work in an iframe.
   // You won't need it on your project.
@@ -158,4 +158,4 @@ SideBar.propTypes = {
   theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles, { withTheme: true })(SideBar);
+export default withStyles(styles, { withTheme: true })(MainLayout);

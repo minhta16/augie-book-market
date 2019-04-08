@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 // import AppBar from "./layouts/AppBar.jsx";
-import SideBar from "./layouts/SideBar.jsx";
+import MainLayout from "./layouts/MainLayout.jsx";
 
 import { createBrowserHistory } from "history";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
@@ -20,10 +20,10 @@ class App extends Component {
     return (
       <div className="App">
         <Router history={hist}>
-          <SideBar />
           <Switch>
             <Redirect exact from="/" to="/home" />
           </Switch>
+          <MainLayout />
         </Router>
       </div>
     );
