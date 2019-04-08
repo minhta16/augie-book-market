@@ -68,7 +68,6 @@ class Account extends Component {
   render() {
     return (
       <div>
-        {console.log(this.state.isSignedIn)}
         {this.state.isSignedIn ? (
           <div>
             <h1>
