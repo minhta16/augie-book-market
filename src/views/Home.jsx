@@ -10,7 +10,10 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 
+import orderBy from "lodash/orderBy";
 import firebase from "../firebase";
+import SearchBar from "../components/SearchBar.jsx";
+import { Divider } from "@material-ui/core";
 
 const styles = theme => ({
   head: {
@@ -36,7 +39,9 @@ class Home extends Component {
       .ref()
       .child("books");
     this.state = {
-      books: []
+      books: [],
+      sortedBooks: [],
+      booksQuery: ""
     };
     this.getDataFromFirebase = this.getDataFromFirebase.bind(this);
   }
@@ -48,7 +53,7 @@ class Home extends Component {
           var val = bookSnapshot.val();
           var book = {
             id: bookSnapshot.key,
-            name: val.name,
+            title: val.title,
             author: val.author,
             price: val.price,
             owner: val.owner
@@ -65,34 +70,49 @@ class Home extends Component {
   }
 
   render() {
-    const books = this.state.books;
+    const books = this.state.booksQuery
+      ? this.state.books.filter(x =>
+          x["title"].toLowerCase().includes(this.state.booksQuery.toLowerCase())
+        )
+      : this.state.books;
+
     return (
-      <Paper className={this.classes.root}>
-        <Table className={this.classes.table}>
-          <TableHead className={this.classes.head}>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Author</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Owner</TableCell>
-              <TableCell>ID</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {books.map(book => (
-              <TableRow key={book.id}>
-                <TableCell component="th" scope="row">
-                  {book.name}
+      //https://material-ui.com/demos/text-fields/
+      <div>
+        <Paper className={this.classes.root}>
+          <SearchBar
+            onChange={e => {
+              this.setState({ booksQuery: e.target.value });
+            }}
+          />
+          <Table className={this.classes.table}>
+            <TableHead className={this.classes.head}>
+              <TableRow>
+                <TableCell prop="title" value="title">
+                  Title
                 </TableCell>
-                <TableCell>{book.author}</TableCell>
-                <TableCell>{book.price}</TableCell>
-                <TableCell>{book.owner}</TableCell>
-                <TableCell>{book.id}</TableCell>
+                <TableCell>Author</TableCell>
+                <TableCell>Price</TableCell>
+                <TableCell>Owner</TableCell>
+                <TableCell>ID</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {books.map(book => (
+                <TableRow key={book.id}>
+                  <TableCell component="th" scope="row">
+                    {book.title}
+                  </TableCell>
+                  <TableCell>{book.author}</TableCell>
+                  <TableCell>{book.price}</TableCell>
+                  <TableCell>{book.owner}</TableCell>
+                  <TableCell>{book.id}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </div>
     );
   }
 }
