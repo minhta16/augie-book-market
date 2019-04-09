@@ -77,8 +77,17 @@ class Home extends Component {
 
   render() {
     const books = this.state.booksQuery
-      ? this.state.books.filter(x =>
-          x["title"].toLowerCase().includes(this.state.booksQuery.toLowerCase())
+      ? orderBy(
+          this.state.books.filter(x => {
+            return (
+              x["title"]
+                .toLowerCase()
+                .includes(this.state.booksQuery.toLowerCase()) ||
+              x["author"]
+                .toLowerCase()
+                .includes(this.state.booksQuery.toLowerCase())
+            );
+          })
         )
       : this.state.books;
 
@@ -91,16 +100,17 @@ class Home extends Component {
         <div>
           <Paper className={this.classes.root}>
             <SearchBar
-              onChange={e => {
+              onKeyUp={e => {
                 this.setState({ booksQuery: e.target.value });
               }}
+              placeholder="Search"
             />
+
+            <Divider className={this.classes.divider} />
             <Table className={this.classes.table}>
               <TableHead className={this.classes.head}>
                 <TableRow>
-                  <TableCell prop="title" value="title">
-                    Title
-                  </TableCell>
+                  <TableCell>Title</TableCell>
                   <TableCell>Author</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Owner</TableCell>

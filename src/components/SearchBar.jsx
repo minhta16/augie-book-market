@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import InputBase from "@material-ui/core/InputBase";
+import Input from "@material-ui/core/Input";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -44,15 +44,18 @@ class SearchBar extends Component {
     return (
       <div>
         <div className={this.classes.searchdiv}>
-          <InputBase
+          <Input
             className={this.classes.input}
-            onChange={e => this.props.onChange(e)}
-            placeholder="Search"
+            onKeyUp={e => this.props.onKeyUp(e)}
+            placeholder={this.props.placeholder}
           />
-          <IconButton className={this.classes.iconButton} aria-label="Search">
+          <IconButton
+            className={this.classes.iconButton}
+            onClick={e => this.props.onClick(e)}
+            aria-label="Search"
+          >
             <SearchIcon />
           </IconButton>
-          <Divider className={this.classes.divider} />
         </div>
       </div>
     );

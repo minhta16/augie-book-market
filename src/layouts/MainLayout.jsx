@@ -24,6 +24,7 @@ import { withStyles } from "@material-ui/core/styles";
 import "typeface-roboto";
 
 import routes from "../routes.js";
+import NotFound from "../views/NotFound.jsx";
 
 const drawerWidth = 240;
 
@@ -138,11 +139,8 @@ class MainLayout extends React.Component {
             {routes.map((prop, key) => (
               <Route key={key} path={prop.path} component={prop.component} />
             ))}
-            <Route
-              render={props => (
-                <Typography paragraph>Page Not Found</Typography>
-              )}
-            />
+
+            <Route to="/not-found" component={NotFound} />
           </Switch>
         </main>
       </div>
