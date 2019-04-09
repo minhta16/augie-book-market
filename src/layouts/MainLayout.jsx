@@ -22,6 +22,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import "typeface-roboto";
+import { createGlobalState } from "react-context-global-state";
 
 import routes from "../routes.js";
 import NotFound from "../views/NotFound.jsx";
@@ -61,9 +62,13 @@ const styles = theme => ({
 });
 
 class MainLayout extends React.Component {
-  state = {
-    mobileOpen: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      mobileOpen: false
+    };
+    this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
+  }
 
   handleDrawerToggle = () => {
     this.setState(state => ({ mobileOpen: !state.mobileOpen }));

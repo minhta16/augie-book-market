@@ -66,13 +66,17 @@ class Home extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.books !== prevState.books) {
+    if (
+      !this.state.finishedPulling &&
+      (Array.isArray(this.state.books) && this.state.books.length)
+    ) {
       this.setState({ finishedPulling: true });
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.getDataFromFirebase();
+    this.componentDidUpdate();
   }
 
   render() {

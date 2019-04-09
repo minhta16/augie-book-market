@@ -10,6 +10,7 @@
     "firebase": "^5.9.3",
     "lodash": "^4.17.11",
     "react": "^16.8.6",
+    "react-context-global-state": "^2.1.5",
     "react-dom": "^16.8.6",
     "react-firebaseui": "^3.1.2",
     "react-router-dom": "^5.0.0",

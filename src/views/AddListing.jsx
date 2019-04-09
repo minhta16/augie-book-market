@@ -103,7 +103,7 @@ class AddListing extends Component {
             title: book.volumeInfo.title,
             author: book.volumeInfo.authors ? book.volumeInfo.authors[0] : "",
             thumbnail: book.volumeInfo.imageLinks
-              ? book.volumeInfo.imageLinks.smallThumbnail
+              ? book.volumeInfo.imageLinks.thumbnail
               : "",
             isbn13:
               book.volumeInfo.industryIdentifiers &&
@@ -140,12 +140,12 @@ class AddListing extends Component {
           <Divider />
           <Grid
             container
-            spacing={0}
+            spacing={8}
             direction="column"
             alignItems="center"
-            style={{ minHeight: "100vh" }}
+            style={{ minHeight: "50vh" }}
           >
-            <Grid item xs={9}>
+            <Grid item xs={11}>
               <div className={this.classes.margin}>
                 <SearchBar
                   id="book-query"
@@ -175,9 +175,8 @@ class AddListing extends Component {
         <SearchIcon className={classes.rightIcon}>Search</SearchIcon>
                 </Button> */}
               </div>
-              <Typography variant="h4">{this.state.query}</Typography>
               <div className="container">
-                <Grid container spacing={24}>
+                <Grid container spacing={8}>
                   {items.map((prop, key) => (
                     <Grid item xs={12} className="gridItem">
                       <BookCard

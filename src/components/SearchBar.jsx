@@ -46,12 +46,12 @@ class SearchBar extends Component {
         <div className={this.classes.searchdiv}>
           <Input
             className={this.classes.input}
-            onKeyUp={e => this.props.onKeyUp(e)}
+            onKeyUp={this.props.onKeyUp}
             placeholder={this.props.placeholder}
           />
           <IconButton
             className={this.classes.iconButton}
-            onClick={e => this.props.onClick(e)}
+            onClick={this.props.onClick}
             aria-label="Search"
           >
             <SearchIcon />
