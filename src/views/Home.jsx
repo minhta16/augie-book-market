@@ -9,6 +9,10 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import orderBy from "lodash/orderBy";
 import firebase from "../firebase";
@@ -30,6 +34,7 @@ const styles = theme => ({
   }
 });
 
+const ITEM_HEIGHT = 48;
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -38,32 +43,70 @@ class Home extends Component {
       .database()
       .ref()
       .child("books");
+
     this.state = {
       books: [],
       booksQuery: "",
-      finishedPulling: false
+      finishedPulling: false,
+      anchorEl: null
     };
     this.getDataFromFirebase = this.getDataFromFirebase.bind(this);
+    this.handleMenuClick = this.handleMenuClick.bind(this);
+    this.handleMenuClose = this.handleMenuClose.bind(this);
   }
 
   getDataFromFirebase() {
-    this.database.on("value", snapshot => {
-      this.database.once("value", booksSnapshot => {
-        booksSnapshot.forEach(bookSnapshot => {
-          var val = bookSnapshot.val();
-          var book = {
-            id: bookSnapshot.key,
-            title: val.title,
-            author: val.author,
-            price: val.price,
-            owner: val.owner
-          };
-          this.setState({ books: [...this.state.books, book] });
-          // etc.
-        });
+    this.database.once("value", booksSnapshot => {
+      booksSnapshot.forEach(bookSnapshot => {
+        var val = bookSnapshot.val();
+        var book = {
+          id: bookSnapshot.key,
+          title: val.title,
+          author: val.author,
+          price: val.price,
+          owner: val.owner,
+          onSale: val.onSale,
+          isbn10: val.isbn10,
+          isbn13: val.isbn13,
+          dateCreated: val.dateCreated
+        };
+        this.setState({ books: [...this.state.books, book] });
+        // etc.
+      });
+    });
+    {
+      console.log(this.state.books);
+    }
+  }
+
+  updateDataFromFirebase() {
+    this.database.on("value", booksSnapshot => {
+      booksSnapshot.forEach(bookSnapshot => {
+        var val = bookSnapshot.val();
+        var book = {
+          id: bookSnapshot.key,
+          title: val.title,
+          author: val.author,
+          price: val.price,
+          owner: val.owner,
+          onSale: val.onSale,
+          isbn10: val.isbn10,
+          isbn13: val.isbn13,
+          dateCreated: val.dateCreated
+        };
+        this.setState({ books: [...this.state.books, book] });
+        // etc.
       });
     });
   }
+
+  handleMenuClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleMenuClose = () => {
+    this.setState({ anchorEl: null });
+  };
 
   componentDidUpdate(prevProps, prevState) {
     if (
@@ -80,20 +123,29 @@ class Home extends Component {
   }
 
   render() {
+    const open = Boolean(this.state.anchorEl);
+
     const books = this.state.booksQuery
       ? orderBy(
           this.state.books.filter(x => {
             return (
-              x["title"]
+              (x["title"]
                 .toLowerCase()
                 .includes(this.state.booksQuery.toLowerCase()) ||
-              x["author"]
-                .toLowerCase()
-                .includes(this.state.booksQuery.toLowerCase())
+                x["author"]
+                  .toLowerCase()
+                  .includes(this.state.booksQuery.toLowerCase()) ||
+                x["isbn10"]
+                  .toLowerCase()
+                  .includes(this.state.booksQuery.toLowerCase()) ||
+                x["isbn13"]
+                  .toLowerCase()
+                  .includes(this.state.booksQuery.toLowerCase())) &&
+              x["onSale"]
             );
           })
         )
-      : this.state.books;
+      : this.state.books.filter(x => x["onSale"]);
 
     return (
       //https://material-ui.com/demos/text-fields/
@@ -116,25 +168,58 @@ class Home extends Component {
                 <TableRow>
                   <TableCell>Title</TableCell>
                   <TableCell>Author</TableCell>
-                  <TableCell>Price</TableCell>
                   <TableCell>Owner</TableCell>
-                  <TableCell>ID</TableCell>
+                  <TableCell>Price</TableCell>
+                  <TableCell>Date Created</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {books.map(book => {
-                  return (
-                    <TableRow key={book.id}>
-                      <TableCell component="th" scope="row">
-                        {book.title}
-                      </TableCell>
-                      <TableCell>{book.author}</TableCell>
-                      <TableCell>{book.price}</TableCell>
-                      <TableCell>{book.owner}</TableCell>
-                      <TableCell>{book.id}</TableCell>
-                    </TableRow>
-                  );
-                })}
+                {books
+                  .slice(0)
+                  .reverse()
+                  .map(book => {
+                    return (
+                      <TableRow key={book.id}>
+                        <TableCell component="th" scope="row">
+                          {book.title}
+                        </TableCell>
+                        <TableCell>{book.author}</TableCell>
+                        <TableCell>{book.owner}</TableCell>
+                        <TableCell>{book.price ? book.price : 0}</TableCell>
+                        <TableCell>{book.dateCreated}</TableCell>
+                        <TableCell>
+                          <IconButton
+                            aria-label="More"
+                            aria-owns={open ? "long-menu" : undefined}
+                            aria-haspopup="true"
+                            onClick={this.handleMenuClick}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id="long-menu"
+                            anchorEl={this.state.anchorEl}
+                            open={open}
+                            onClose={this.handleMenuClose}
+                            PaperProps={{
+                              style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: 200
+                              }
+                            }}
+                          >
+                            <MenuItem
+                              key="Option"
+                              onClick={this.handleMenuClose}
+                            >
+                              Option
+                            </MenuItem>
+                            ))}
+                          </Menu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 {console.log(books)}
               </TableBody>
             </Table>

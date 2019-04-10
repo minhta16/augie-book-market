@@ -8,6 +8,8 @@ import Hidden from "@material-ui/core/Hidden";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 import {
   BrowserRouter as Router,
   Route,
@@ -26,6 +28,8 @@ import { createGlobalState } from "react-context-global-state";
 
 import routes from "../routes.js";
 import NotFound from "../views/NotFound.jsx";
+import firebase from "../firebase";
+import Account from "../views/Account.jsx";
 
 const drawerWidth = 240;
 
@@ -65,9 +69,18 @@ class MainLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mobileOpen: false
+      mobileOpen: false,
+      isSignedIn: false
     };
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({
+        isSignedIn: !!user
+      });
+    });
   }
 
   handleDrawerToggle = () => {
@@ -97,17 +110,47 @@ class MainLayout extends React.Component {
         <CssBaseline />
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerToggle}
-              className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" color="inherit" noWrap>
-              Augie Book Market
-            </Typography>
+            <Grid container justify="space-between">
+              <Grid item>
+                <IconButton
+                  color="inherit"
+                  aria-label="Open drawer"
+                  onClick={this.handleDrawerToggle}
+                  className={classes.menuButton}
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" color="inherit" noWrap>
+                  Augie Book Market
+                </Typography>
+              </Grid>
+              {this.state.isSignedIn ? (
+                <Grid item>
+                  <Grid container style={{ display: "flex" }} spacing={8}>
+                    <Grid item>
+                      <Typography variant="h6" color="inherit" noWrap>
+                        Hi{" "}
+                        {this.state.isSignedIn
+                          ? firebase.auth().currentUser.displayName
+                          : ""}
+                        !
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+                      <Button variant="contained" color="secondary">
+                        Log Out
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              ) : (
+                <Grid item>
+                  <Button variant="contained" color="secondary">
+                    Sign In
+                  </Button>
+                </Grid>
+              )}
+            </Grid>
           </Toolbar>
         </AppBar>
         <nav className={classes.drawer}>
@@ -141,10 +184,16 @@ class MainLayout extends React.Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
+            this.state.isSignedIn ?
+            <Route to="/account-detail" component={Account} /> :
             {routes.map((prop, key) => (
-              <Route key={key} path={prop.path} component={prop.component} />
+              <Route
+                key={key}
+                path={prop.path}
+                component={prop.component}
+                isSignedIn={this.state.isSignedIn}
+              />
             ))}
-
             <Route to="/not-found" component={NotFound} />
           </Switch>
         </main>

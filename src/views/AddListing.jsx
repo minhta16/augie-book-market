@@ -65,6 +65,7 @@ class AddListing extends Component {
   }
 
   handleClick(event) {
+    event.preventDefault();
     this.setState({
       items: []
     });

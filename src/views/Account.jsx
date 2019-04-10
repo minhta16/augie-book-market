@@ -8,8 +8,9 @@ import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 class Account extends Component {
   constructor(props) {
     super(props);
+    this.props = props;
     this.state = {
-      isSignedIn: false,
+      isSignedIn: props.isSignedIn,
       number: 0,
       name: ""
     };
@@ -32,6 +33,7 @@ class Account extends Component {
       this.setState({
         isSignedIn: !!user
       });
+      this.props.isSignedIn = this.state.isSignedIn;
     });
   }
 
