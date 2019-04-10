@@ -10,13 +10,10 @@ class Account extends Component {
     super(props);
     this.props = props;
     this.state = {
-      isSignedIn: props.isSignedIn,
+      isSignedIn: false,
       number: 0,
       name: ""
     };
-    this.buttonHandler = this.buttonHandler.bind(this);
-    this.pushToFirebase = this.pushToFirebase.bind(this);
-    this.submitNameHandler = this.submitNameHandler.bind(this);
     this.uiConfig = {
       signInFlow: "popup",
       signInOptions: [
@@ -28,43 +25,12 @@ class Account extends Component {
       }
     };
   }
-  componentDidMount() {
+  componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
       this.setState({
         isSignedIn: !!user
       });
-      this.props.isSignedIn = this.state.isSignedIn;
     });
-  }
-
-  buttonHandler(e) {
-    e.preventDefault();
-    this.setState({
-      number: Math.floor(Math.random() * 100)
-    });
-  }
-
-  submitNameHandler(e) {
-    e.preventDefault();
-    let name = document.getElementById("name").value;
-    this.setState({
-      name: name
-    });
-    document.getElementById("name").value = "";
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.number !== prevState.number) {
-      this.pushToFirebase("number", this.state.number);
-    }
-    if (this.state.name !== prevState.name) {
-      this.pushToFirebase("name", this.state.name);
-    }
-  }
-
-  pushToFirebase(reference, object) {
-    const ref = firebase.database().ref(reference);
-    ref.push(object);
   }
 
   render() {
@@ -81,28 +47,15 @@ class Account extends Component {
           </div>
         ) : (
           <div>
+            <Typography variant="body1">
+              You are not signed in. Please sign in to join the market!
+            </Typography>
             <StyledFirebaseAuth
               uiConfig={this.uiConfig}
               firebaseAuth={firebase.auth()}
             />
           </div>
         )}
-        <TextField
-          label="Name"
-          id="name"
-          onKeyDown={e => {
-            if (e.keyCode === 13) {
-              this.submitNameHandler(e);
-            }
-          }}
-        />
-        <Button color="primary" onClick={this.submitNameHandler}>
-          Submit Name
-        </Button>
-        <h1>{this.state.number}</h1>
-        <Button color="primary" onClick={this.buttonHandler}>
-          Generate Random Number
-        </Button>
       </div>
     );
   }

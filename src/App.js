@@ -19,11 +19,11 @@ class App extends Component {
     const hist = createBrowserHistory();
     return (
       <div className="App">
-        <Router history={hist}>
+        <Router history={hist} basename={process.env.PUBLIC_URL}>
           <Switch>
             <Redirect exact from="/" to="/home" />
           </Switch>
-          <MainLayout />
+          <MainLayout history={hist} />
         </Router>
       </div>
     );

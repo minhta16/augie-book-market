@@ -29,7 +29,6 @@ import { createGlobalState } from "react-context-global-state";
 import routes from "../routes.js";
 import NotFound from "../views/NotFound.jsx";
 import firebase from "../firebase";
-import Account from "../views/Account.jsx";
 
 const drawerWidth = 240;
 
@@ -68,6 +67,7 @@ const styles = theme => ({
 class MainLayout extends React.Component {
   constructor(props) {
     super(props);
+    this.history = props.history;
     this.state = {
       mobileOpen: false,
       isSignedIn: false
@@ -75,7 +75,7 @@ class MainLayout extends React.Component {
     this.handleDrawerToggle = this.handleDrawerToggle.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
       this.setState({
         isSignedIn: !!user
@@ -95,7 +95,13 @@ class MainLayout extends React.Component {
         <div className={classes.toolbar} />
         <List>
           {routes.map((prop, key) => (
-            <ListItem button key={prop.name} component={Link} to={prop.path}>
+            <ListItem
+              button
+              key={prop.name}
+              component={Link}
+              to={prop.path}
+              history={this.history}
+            >
               <prop.icon />
               <ListItemText primary={prop.name} />
             </ListItem>
@@ -129,11 +135,8 @@ class MainLayout extends React.Component {
                   <Grid container style={{ display: "flex" }} spacing={8}>
                     <Grid item>
                       <Typography variant="h6" color="inherit" noWrap>
-                        Hi{" "}
-                        {this.state.isSignedIn
-                          ? firebase.auth().currentUser.displayName
-                          : ""}
-                        !
+                        Signed in! Welcome{" "}
+                        {firebase.auth().currentUser.displayName}
                       </Typography>
                     </Grid>
                     <Grid item>
@@ -184,15 +187,8 @@ class MainLayout extends React.Component {
         <main className={classes.content}>
           <div className={classes.toolbar} />
           <Switch>
-            this.state.isSignedIn ?
-            <Route to="/account-detail" component={Account} /> :
             {routes.map((prop, key) => (
-              <Route
-                key={key}
-                path={prop.path}
-                component={prop.component}
-                isSignedIn={this.state.isSignedIn}
-              />
+              <Route key={key} path={prop.path} component={prop.component} />
             ))}
             <Route to="/not-found" component={NotFound} />
           </Switch>

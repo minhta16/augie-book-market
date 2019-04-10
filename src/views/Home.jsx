@@ -17,7 +17,8 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import orderBy from "lodash/orderBy";
 import firebase from "../firebase";
 import SearchBar from "../components/SearchBar.jsx";
-import { Divider } from "@material-ui/core";
+import Account from "../views/Account";
+import { Divider, Typography } from "@material-ui/core";
 
 const styles = theme => ({
   head: {
@@ -48,7 +49,8 @@ class Home extends Component {
       books: [],
       booksQuery: "",
       finishedPulling: false,
-      anchorEl: null
+      anchorEl: null,
+      isSignedIn: false
     };
     this.getDataFromFirebase = this.getDataFromFirebase.bind(this);
     this.handleMenuClick = this.handleMenuClick.bind(this);
@@ -118,6 +120,11 @@ class Home extends Component {
   }
 
   componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({
+        isSignedIn: !!user
+      });
+    });
     this.getDataFromFirebase();
     this.componentDidUpdate();
   }
@@ -146,12 +153,18 @@ class Home extends Component {
           })
         )
       : this.state.books.filter(x => x["onSale"]);
-
+    {
+      console.log(this.state.isSignedIn);
+    }
     return (
       //https://material-ui.com/demos/text-fields/
 
       !this.state.finishedPulling ? (
-        <div>Loading...</div>
+        !this.state.isSignedIn ? (
+          <Account />
+        ) : (
+          <div>Loading...</div>
+        )
       ) : (
         <div>
           <Paper className={this.classes.root}>
