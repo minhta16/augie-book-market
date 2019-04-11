@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Typography, CssBaseline } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 
 class NotFound extends Component {
   render() {

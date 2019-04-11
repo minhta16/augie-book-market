@@ -3,9 +3,18 @@ import React, { Component } from "react";
 import MainLayout from "./layouts/MainLayout.jsx";
 
 import { createBrowserHistory } from "history";
-import { Router, Route, Switch, Redirect } from "react-router-dom";
+import { Router, Switch, Redirect } from "react-router-dom";
 import "typeface-roboto";
 import "./App.css";
+import { createMuiTheme, withTheme } from "@material-ui/core/styles";
+import { indigo, yellow } from "@material-ui/core/colors";
+
+const theme = createMuiTheme({
+  palette: {
+    primary: indigo,
+    secondary: yellow
+  }
+});
 
 class App extends Component {
   constructor(props) {
@@ -30,4 +39,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withTheme(theme)(App);

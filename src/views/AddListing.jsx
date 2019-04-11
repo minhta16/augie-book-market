@@ -1,26 +1,11 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import {
-  TextField,
-  Paper,
-  Typography,
-  Divider,
-  Grid,
-  ButtonBase,
-  Button
-} from "@material-ui/core";
-
-import { Link } from "react-router-dom";
-
-import SearchIcon from "@material-ui/icons/Search";
+import { Paper, Typography, Divider, Grid } from "@material-ui/core";
 
 import SearchBar from "../components/SearchBar";
-import AutoCompleteField from "../components/AutoCompleteField";
 import BookCard from "../components/BookCard";
 
 // https://stackoverflow.com/questions/42361689/implement-html-entity-decode-in-react-js
-const renderHTML = rawHTML =>
-  React.createElement("div", { dangerouslySetInnerHTML: { __html: rawHTML } });
 
 const APIkey = "AIzaSyCalcsBPPiKqeweUkLttnlCX763LRP9jJ8";
 const styles = theme => ({
@@ -78,13 +63,13 @@ class AddListing extends Component {
       this.handleClick(event);
     }
     this.setState({
-      query: event.target.value.replace(/ /g, "").toLowerCase()
+      query: event.target.value
     });
   }
   // https://github.com/nileshgulia1/React-bookstore/blob/master/app/components/App.jsx
 
   search() {
-    let query = this.state.query;
+    let query = this.state.query.replace(/ /g, "+").toLowerCase();
     const BASE_URL =
       "https://www.googleapis.com/books/v1/volumes?max-results=10&q=name:" +
       query +
@@ -157,24 +142,6 @@ class AddListing extends Component {
                   margin="normal"
                   placeholder="Enter a book title"
                 />
-                {/* <TextField
-                  id="book-query"
-                  label="Book lookup"
-                  className={this.classes.textField}
-                  onKeyUp={e => this.handleKeyPress(e)}
-                  margin="normal"
-                />
-                <Button
-                  variant="contained"
-                  size="large"
-                  color="primary"
-                  className={this.classes.margin}
-                  onClick={e => this.handleClick(e)}
-                >
-                  Search
-                  
-        <SearchIcon className={classes.rightIcon}>Search</SearchIcon>
-                </Button> */}
               </div>
               <div className="container">
                 <Grid container spacing={8}>

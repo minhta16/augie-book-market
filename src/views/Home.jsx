@@ -3,22 +3,25 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+  Divider
+} from "@material-ui/core";
 
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import orderBy from "lodash/orderBy";
 import firebase from "../firebase";
 import SearchBar from "../components/SearchBar.jsx";
 import Account from "../views/Account";
-import { Divider, Typography } from "@material-ui/core";
 
 const styles = theme => ({
   head: {
@@ -76,9 +79,6 @@ class Home extends Component {
         // etc.
       });
     });
-    {
-      console.log(this.state.books);
-    }
   }
 
   updateDataFromFirebase() {
@@ -119,11 +119,12 @@ class Home extends Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
       this.setState({
         isSignedIn: !!user
       });
+      this.forceUpdate();
     });
     this.getDataFromFirebase();
     this.componentDidUpdate();
@@ -153,18 +154,13 @@ class Home extends Component {
           })
         )
       : this.state.books.filter(x => x["onSale"]);
-    {
-      console.log(this.state.isSignedIn);
-    }
     return (
       //https://material-ui.com/demos/text-fields/
 
-      !this.state.finishedPulling ? (
-        !this.state.isSignedIn ? (
-          <Account />
-        ) : (
-          <div>Loading...</div>
-        )
+      !this.state.isSignedIn ? (
+        <Account />
+      ) : !this.state.finishedPulling ? (
+        <div>Loading...</div>
       ) : (
         <div>
           <Paper className={this.classes.root}>
@@ -179,11 +175,13 @@ class Home extends Component {
             <Table className={this.classes.table}>
               <TableHead className={this.classes.head}>
                 <TableRow>
+                  <TableCell />
                   <TableCell>Title</TableCell>
                   <TableCell>Author</TableCell>
                   <TableCell>Owner</TableCell>
                   <TableCell>Price</TableCell>
                   <TableCell>Date Created</TableCell>
+                  <TableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -193,6 +191,17 @@ class Home extends Component {
                   .map(book => {
                     return (
                       <TableRow key={book.id}>
+                        <TableCell>
+                          {book.onSale ? (
+                            <Typography style={{ color: "#4caf50" }}>
+                              Available
+                            </Typography>
+                          ) : (
+                            <Typography style={{ color: "#ff1744" }}>
+                              Sold
+                            </Typography>
+                          )}
+                        </TableCell>
                         <TableCell component="th" scope="row">
                           {book.title}
                         </TableCell>
