@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/book-selling-augie/precache-manifest.4f43d06d5ce4125fe45a2c4029ee0218.js"
+  "/augie-book-market/precache-manifest.3d3be47985ca015eda9ccd7390f3b04f.js"
 );
 
 workbox.clientsClaim();
@@ -28,7 +28,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute("/book-selling-augie/index.html", {
+workbox.routing.registerNavigationRoute("/augie-book-market/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
