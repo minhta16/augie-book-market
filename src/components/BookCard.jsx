@@ -3,20 +3,28 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import MuiExpansionPanel from "@material-ui/core/ExpansionPanel";
-import MuiExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import MuiExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-import { TextField } from "@material-ui/core";
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Button,
+  Grid,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  MenuItem,
+  ExpansionPanel as MuiExpansionPanel,
+  ExpansionPanelSummary as MuiExpansionPanelSummary,
+  ExpansionPanelDetails as MuiExpansionPanelDetails,
+  TextField,
+  Snackbar,
+  IconButton
+} from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
-import Snackbar from "@material-ui/core/Snackbar";
-import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
 import firebase from "../firebase";
@@ -85,6 +93,16 @@ const styles = theme => ({
   },
   expansionPanel: {
     width: "100%"
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 140
+  },
+  input: {
+    minWidth: 140
   }
 });
 
@@ -97,10 +115,14 @@ class BookCard extends Component {
     this.state = {
       price: 0,
       date: date,
-      open: false
+      open: false,
+      dialogOpen: false,
+      condition: ""
     };
     this.onClickHandler = this.onClickHandler.bind(this);
     this.pushToFirebase = this.pushToFirebase.bind(this);
+    this.handleDialogClickOpen = this.handleDialogClickOpen.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
   }
 
   pushToFirebase(reference, object) {
@@ -121,29 +143,77 @@ class BookCard extends Component {
     this.setState({ open: false });
   };
 
+  handleDialogClickOpen = () => {
+    this.setState({ dialogOpen: true });
+  };
+
+  handleDialogClose = () => {
+    this.setState({ dialogOpen: false });
+  };
+
   onClickHandler(e) {
     e.preventDefault();
-    const props = this.props;
-    this.pushToFirebase("books", {
-      onSale: true,
-      title: props.title,
-      author: props.author ? props.author : "",
-      isbn10: props.isbn10 ? props.isbn10 : "",
-      isbn13: props.isbn13 ? props.isbn13 : "",
-      snippet: props.snippet ? props.snippet : "",
-      thumbnail: props.thumbnail ? props.thumbnail : "",
-      price: this.state.price,
-      owner: firebase.auth().currentUser.displayName,
-      dateCreated: this.state.date
-    });
-    console.log(this.state.price);
-    this.setState({ open: true });
+    if (!this.state.price) {
+      this.setState({
+        dialogOpen: true
+      });
+    } else {
+      const props = this.props;
+      this.pushToFirebase("books", {
+        onSale: true,
+        title: props.title,
+        author: props.author ? props.author : "",
+        isbn10: props.isbn10 ? props.isbn10 : "",
+        isbn13: props.isbn13 ? props.isbn13 : "",
+        snippet: props.snippet ? props.snippet : "",
+        thumbnail: props.thumbnail ? props.thumbnail : "",
+        price: "$ " + parseFloat(this.state.price).toFixed(2),
+        // TODO: implement condition
+        condition: this.state.condition,
+        owner: firebase.auth().currentUser.displayName,
+        ownerUID: firebase.auth().currentUser.uid,
+        ownerPhotoURL: firebase.auth().currentUser.photoURL,
+        dateCreated: this.state.date
+      });
+      console.log(this.state.price);
+      this.setState({ open: true });
+    }
   }
   render() {
     const { classes } = this.props;
     const props = this.props;
+    const dialog = (
+      <Dialog
+        open={this.state.dialogOpen}
+        onClose={this.handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Warning"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You haven't enter a price. Please enter a price!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleDialogClose} color="primary" autoFocus>
+            Dismiss
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+
+    const conditions = [
+      "New",
+      "Renewed",
+      "Used - Like New",
+      "Used - Very Good",
+      "Used - Good",
+      "Used - Acceptable"
+    ];
     return (
       <Card className={classes.card}>
+        {dialog}
         <ExpansionPanel
           id="expansion-panel"
           square
@@ -190,11 +260,17 @@ class BookCard extends Component {
             </Grid>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Grid container spacing={8}>
-              <Grid item xs={3}>
+            <Grid
+              container
+              spacing={8}
+              justify="flex-start"
+              alignItems="flex-start"
+            >
+              <Grid item xs={2}>
                 <TextField
                   id="price"
                   label="Price"
+                  variant="outlined"
                   className={classes.input}
                   placeholder={props.placeholder}
                   onKeyUp={e => {
@@ -202,8 +278,37 @@ class BookCard extends Component {
                   }}
                 />
               </Grid>
-
-              <Grid item xs={3}>
+              <Grid item xs={2}>
+                <TextField
+                  id="condition"
+                  select
+                  label="Condition"
+                  className={classes.formControl}
+                  value={this.state.condition}
+                  onChange={e =>
+                    this.setState({
+                      condition: e.target.value
+                    })
+                  }
+                  SelectProps={{
+                    MenuProps: {
+                      className: classes.menu
+                    }
+                  }}
+                  helperText="Select your book condition"
+                  margin="normal"
+                  variant="outlined"
+                >
+                  {conditions.map(value => {
+                    return (
+                      <MenuItem value={value}>
+                        <Typography>{value}</Typography>
+                      </MenuItem>
+                    );
+                  })}
+                </TextField>
+              </Grid>
+              <Grid item xs={2}>
                 <Button
                   variant="contained"
                   size="large"

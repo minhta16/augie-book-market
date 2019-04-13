@@ -14,10 +14,12 @@ import {
   Menu,
   MenuItem,
   Typography,
-  Divider
+  Divider,
+  Grid
 } from "@material-ui/core";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
+import PersonIcon from "@material-ui/icons/Person";
 import orderBy from "lodash/orderBy";
 import firebase from "../firebase";
 import SearchBar from "../components/SearchBar.jsx";
@@ -70,6 +72,8 @@ class Home extends Component {
           author: val.author,
           price: val.price,
           owner: val.owner,
+          ownerUID: val.ownerUID,
+          ownerPhotoURL: val.ownerPhotoURL,
           onSale: val.onSale,
           isbn10: val.isbn10,
           isbn13: val.isbn13,
@@ -91,6 +95,8 @@ class Home extends Component {
           author: val.author,
           price: val.price,
           owner: val.owner,
+          ownerUID: val.ownerUID,
+          ownerPhotoURL: val.ownerPhotoURL,
           onSale: val.onSale,
           isbn10: val.isbn10,
           isbn13: val.isbn13,
@@ -206,7 +212,33 @@ class Home extends Component {
                           {book.title}
                         </TableCell>
                         <TableCell>{book.author}</TableCell>
-                        <TableCell>{book.owner}</TableCell>
+                        <TableCell>
+                          <Grid
+                            container
+                            spacing={24}
+                            justify="center"
+                            alignItems="center"
+                          >
+                            <Grid item xs={3}>
+                              {book.ownerPhotoURL ? (
+                                <img
+                                  src={book.ownerPhotoURL}
+                                  alt={`${book.owner} avatar`}
+                                  style={{
+                                    height: 24,
+                                    width: 24,
+                                    borderRadius: 12
+                                  }}
+                                />
+                              ) : (
+                                <PersonIcon />
+                              )}
+                            </Grid>
+                            <Grid item xs={9}>
+                              {book.owner}
+                            </Grid>
+                          </Grid>
+                        </TableCell>
                         <TableCell>{book.price ? book.price : 0}</TableCell>
                         <TableCell>{book.dateCreated}</TableCell>
                         <TableCell>

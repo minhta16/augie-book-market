@@ -23,12 +23,12 @@ class App extends Component {
       user: []
     };
   }
-
+  //process.env.PUBLIC_URL
   render() {
-    const hist = createBrowserHistory();
+    const hist = createBrowserHistory({ basename: process.env.PUBLIC_URL });
     return (
       <div className="App">
-        <Router history={hist} basename={process.env.PUBLIC_URL}>
+        <Router history={hist}>
           <Switch>
             <Redirect exact from="/" to="/home" />
           </Switch>

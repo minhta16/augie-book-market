@@ -137,7 +137,7 @@ class MainLayout extends React.Component {
                     <Grid container style={{ display: "flex" }} spacing={8}>
                       <Grid item>
                         <Typography variant="h6" color="inherit" noWrap>
-                          Signed in! Welcome{" "}
+                          Welcome,
                           {firebase.auth().currentUser.displayName}
                         </Typography>
                       </Grid>

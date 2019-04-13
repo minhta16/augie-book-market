@@ -12,9 +12,20 @@ import {
   TableBody,
   Paper,
   Select,
-  MenuItem
+  MenuItem,
+  Grid,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Snackbar,
+  IconButton
 } from "@material-ui/core";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import PersonIcon from "@material-ui/icons/Person";
+import CloseIcon from "@material-ui/icons/Close";
 import SearchBar from "../components/SearchBar";
 
 import orderBy from "lodash/orderBy";
@@ -37,7 +48,8 @@ const styles = theme => ({
     minWidth: 120
   },
   selectEmpty: {
-    marginTop: theme.spacing.unit * 2
+    marginTop: theme.spacing.unit * 2,
+    minWidth: 200
   }
 });
 
@@ -55,7 +67,9 @@ class Account extends Component {
       isSignedIn: false,
       number: 0,
       name: "",
-      userBooks: []
+      userBooks: [],
+      openDeleteConfirm: false,
+      snackopen: false
     };
     this.uiConfig = {
       signInFlow: "popup",
@@ -69,8 +83,17 @@ class Account extends Component {
     };
     this.getDataFromFirebase = this.getDataFromFirebase.bind(this);
     this.pushToFirebase = this.pushToFirebase.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleDeteleBtn = this.handleDeteleBtn.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.openDialog = this.openDialog.bind(this);
+    this.openSnackbar = this.openSnackbar.bind(this);
+    this.handleSnackClose = this.handleSnackClose.bind(this);
   }
   getDataFromFirebase() {
+    this.setState({
+      userBooks: []
+    });
     this.database.once("value", booksSnapshot => {
       booksSnapshot.forEach(bookSnapshot => {
         var val = bookSnapshot.val();
@@ -80,7 +103,10 @@ class Account extends Component {
             title: val.title,
             author: val.author,
             price: val.price,
+            condition: val.condition,
             owner: val.owner,
+            ownerUID: val.ownerUID,
+            ownerPhotoURL: val.ownerPhotoURL,
             onSale: val.onSale,
             isbn10: val.isbn10,
             isbn13: val.isbn13,
@@ -91,6 +117,32 @@ class Account extends Component {
         // etc.
       });
     });
+  }
+
+  handleDeteleBtn() {
+    this.setState({
+      openDeleteConfirm: true
+    });
+  }
+
+  handleDialogClose() {
+    this.setState({
+      openDeleteConfirm: false
+    });
+  }
+
+  handleDelete(book) {
+    firebase
+      .database()
+      .ref(`/books/${book.id}`)
+      .remove()
+      .then(() => {
+        console.log(book.id);
+      })
+      .catch(error => {
+        console.log("Error: " + error.message);
+      });
+    this.getDataFromFirebase();
   }
 
   pushToFirebase(reference, object) {
@@ -117,6 +169,74 @@ class Account extends Component {
     this.componentDidUpdate();
   }
 
+  handleSnackClose() {
+    this.setState({
+      snackopen: true
+    });
+  }
+  openSnackbar() {
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left"
+        }}
+        open={this.state.snackopen}
+        autoHideDuration={6000}
+        onClose={this.handleSnackClose}
+        ContentProps={{
+          "aria-describedby": "message-id"
+        }}
+        message={<span id="message-id">Listing deleted</span>}
+        action={[
+          <IconButton
+            key="close"
+            aria-label="Close"
+            color="inherit"
+            className={this.classes.close}
+            onClick={this.handleSnackClose}
+          >
+            <CloseIcon />
+          </IconButton>
+        ]}
+      />
+    );
+  }
+
+  openDialog(book) {
+    return (
+      <Dialog
+        open={this.state.openDeleteConfirm}
+        onClose={this.handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Warning"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this listing?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              this.handleDelete(book);
+              this.handleDialogClose();
+              this.setState({
+                snackopen: true
+              });
+            }}
+            color="primary"
+          >
+            Confirm
+          </Button>
+          <Button onClick={this.handleDialogClose} color="primary" autoFocus>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
   render() {
     const userBooks = this.state.booksQuery
       ? orderBy(
@@ -149,7 +269,7 @@ class Account extends Component {
                 variant="h2"
                 style={{ padding: "20px 20px", textAlign: "left" }}
               >
-                Manage your listing
+                Listing Manager
               </Typography>
               <SearchBar
                 onKeyUp={e => {
@@ -168,6 +288,7 @@ class Account extends Component {
                     <TableCell>Owner</TableCell>
                     <TableCell>Price</TableCell>
                     <TableCell>Date Created</TableCell>
+                    <TableCell />
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -213,9 +334,44 @@ class Account extends Component {
                             {book.title}
                           </TableCell>
                           <TableCell>{book.author}</TableCell>
-                          <TableCell>{book.owner}</TableCell>
+                          <TableCell>
+                            <Grid
+                              container
+                              spacing={24}
+                              justify="center"
+                              alignItems="center"
+                            >
+                              <Grid item xs={3}>
+                                {book.ownerPhotoURL ? (
+                                  <img
+                                    src={book.ownerPhotoURL}
+                                    alt={`${book.owner} avatar`}
+                                    style={{
+                                      height: 24,
+                                      width: 24,
+                                      borderRadius: 12
+                                    }}
+                                  />
+                                ) : (
+                                  <PersonIcon />
+                                )}
+                              </Grid>
+                              <Grid item xs={9}>
+                                {book.owner}
+                              </Grid>
+                            </Grid>
+                          </TableCell>
                           <TableCell>{book.price ? book.price : 0}</TableCell>
                           <TableCell>{book.dateCreated}</TableCell>
+                          <TableCell>
+                            <Button onClick={this.handleDeteleBtn}>
+                              <Typography style={{ color: "#f44336" }}>
+                                Delete
+                              </Typography>
+                            </Button>
+                            {this.openDialog(book)}
+                            {this.openSnackbar()}
+                          </TableCell>
                         </TableRow>
                       );
                     })}
