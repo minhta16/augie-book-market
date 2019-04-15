@@ -36,7 +36,8 @@ const styles = theme => ({
     overflowX: "auto"
   },
   table: {
-    minWidth: 700
+    minWidth: 700,
+    padding: "10px"
   }
 });
 
@@ -63,49 +64,61 @@ class Home extends Component {
   }
 
   getDataFromFirebase() {
-    this.database.once("value", booksSnapshot => {
-      booksSnapshot.forEach(bookSnapshot => {
-        var val = bookSnapshot.val();
-        var book = {
-          id: bookSnapshot.key,
-          title: val.title,
-          author: val.author,
-          price: val.price,
-          owner: val.owner,
-          ownerUID: val.ownerUID,
-          ownerPhotoURL: val.ownerPhotoURL,
-          onSale: val.onSale,
-          isbn10: val.isbn10,
-          isbn13: val.isbn13,
-          dateCreated: val.dateCreated
-        };
-        this.setState({ books: [...this.state.books, book] });
-        // etc.
-      });
-    });
+    this.database
+      .once("value", booksSnapshot => {
+        booksSnapshot.forEach(bookSnapshot => {
+          var val = bookSnapshot.val();
+          var book = {
+            id: bookSnapshot.key,
+            title: val.title,
+            author: val.author,
+            price: val.price,
+            owner: val.owner,
+            ownerUID: val.ownerUID,
+            ownerPhotoURL: val.ownerPhotoURL,
+            onSale: val.onSale,
+            isbn10: val.isbn10,
+            isbn13: val.isbn13,
+            dateCreated: val.dateCreated
+          };
+          this.setState({ books: [...this.state.books, book] });
+          // etc.
+        });
+      })
+      .then(
+        this.setState({
+          finishedPulling: true
+        })
+      );
   }
 
   updateDataFromFirebase() {
-    this.database.on("value", booksSnapshot => {
-      booksSnapshot.forEach(bookSnapshot => {
-        var val = bookSnapshot.val();
-        var book = {
-          id: bookSnapshot.key,
-          title: val.title,
-          author: val.author,
-          price: val.price,
-          owner: val.owner,
-          ownerUID: val.ownerUID,
-          ownerPhotoURL: val.ownerPhotoURL,
-          onSale: val.onSale,
-          isbn10: val.isbn10,
-          isbn13: val.isbn13,
-          dateCreated: val.dateCreated
-        };
-        this.setState({ books: [...this.state.books, book] });
-        // etc.
-      });
-    });
+    this.database
+      .on("value", booksSnapshot => {
+        booksSnapshot.forEach(bookSnapshot => {
+          var val = bookSnapshot.val();
+          var book = {
+            id: bookSnapshot.key,
+            title: val.title,
+            author: val.author,
+            price: val.price,
+            owner: val.owner,
+            ownerUID: val.ownerUID,
+            ownerPhotoURL: val.ownerPhotoURL,
+            onSale: val.onSale,
+            isbn10: val.isbn10,
+            isbn13: val.isbn13,
+            dateCreated: val.dateCreated
+          };
+          this.setState({ books: [...this.state.books, book] });
+          // etc.
+        });
+      })
+      .then(
+        this.setState({
+          finishedPulling: true
+        })
+      );
   }
 
   handleMenuClick = event => {
@@ -116,24 +129,13 @@ class Home extends Component {
     this.setState({ anchorEl: null });
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      !this.state.finishedPulling &&
-      (Array.isArray(this.state.books) && this.state.books.length)
-    ) {
-      this.setState({ finishedPulling: true });
-    }
-  }
-
   componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
       this.setState({
         isSignedIn: !!user
       });
-      this.forceUpdate();
     });
     this.getDataFromFirebase();
-    this.componentDidUpdate();
   }
 
   render() {
@@ -170,6 +172,13 @@ class Home extends Component {
       ) : (
         <div>
           <Paper className={this.classes.root}>
+            <Typography
+              variant="h2"
+              style={{ padding: "20px 20px", textAlign: "left" }}
+            >
+              Home
+            </Typography>
+            <Divider />
             <SearchBar
               onKeyUp={e => {
                 this.setState({ booksQuery: e.target.value });
