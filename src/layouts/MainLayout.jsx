@@ -21,6 +21,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { indigo, yellow } from "@material-ui/core/colors";
+import logo from "../img/bookmarketlogo4.png";
 import "typeface-roboto";
 
 import routes from "../routes.js";
@@ -132,11 +133,7 @@ class MainLayout extends React.Component {
                     <MenuIcon />
                   </IconButton>
                   <ButtonBase>
-                    <img
-                      src="/bookmarketlogo4.png"
-                      alt="Augie Book Market"
-                      height="65"
-                    />
+                    <img src={logo} alt="Augie Book Market" height="65" />
                   </ButtonBase>
                 </Grid>
                 {this.state.isSignedIn ? (
@@ -144,8 +141,9 @@ class MainLayout extends React.Component {
                     <Grid container style={{ display: "flex" }} spacing={8}>
                       <Grid item>
                         <Typography variant="h6" color="inherit" noWrap>
-                          Welcome,
-                          {firebase.auth().currentUser.displayName}
+                          {`Welcome, ${
+                            firebase.auth().currentUser.displayName
+                          }`}
                         </Typography>
                       </Grid>
                       <Grid item>

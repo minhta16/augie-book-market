@@ -2,8 +2,8 @@ import React, { Component } from "react";
 // import AppBar from "./layouts/AppBar.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 
-import { createBrowserHistory } from "history";
-import { Router, Switch, Redirect } from "react-router-dom";
+import { createHashHistory } from "history";
+import { HashRouter as Router, Switch, Redirect } from "react-router-dom";
 import "typeface-roboto";
 import "./App.css";
 import { createMuiTheme, withTheme } from "@material-ui/core/styles";
@@ -25,7 +25,9 @@ class App extends Component {
   }
   //process.env.PUBLIC_URL
   render() {
-    const hist = createBrowserHistory({ basename: process.env.PUBLIC_URL });
+    const hist = createHashHistory({
+      basename: process.env.PUBLIC_URL
+    });
     return (
       <div className="App">
         <Router history={hist}>
