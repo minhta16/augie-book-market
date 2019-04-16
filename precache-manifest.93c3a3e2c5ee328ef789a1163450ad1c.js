@@ -4,7 +4,7 @@ self.__precacheManifest = [
     "url": "/augie-book-market/static/media/roboto-latin-300italic.d69924b9.woff2"
   },
   {
-    "revision": "afef391c755043279402",
+    "revision": "d4b0365e8f2247035f3e",
     "url": "/augie-book-market/static/css/main.379affa6.chunk.css"
   },
   {
@@ -44,12 +44,12 @@ self.__precacheManifest = [
     "url": "/augie-book-market/static/media/roboto-latin-900.19b7a0ad.woff2"
   },
   {
-    "revision": "6232f43d15b0e7a0bf0fe82e295bdd06",
-    "url": "/augie-book-market/static/media/roboto-latin-100italic.6232f43d.woff2"
-  },
-  {
     "revision": "e9dbbe8a693dd275c16d32feb101f1c1",
     "url": "/augie-book-market/static/media/roboto-latin-100.e9dbbe8a.woff"
+  },
+  {
+    "revision": "6232f43d15b0e7a0bf0fe82e295bdd06",
+    "url": "/augie-book-market/static/media/roboto-latin-100italic.6232f43d.woff2"
   },
   {
     "revision": "d704bb3d579b7d5e40880c75705c8a71",
@@ -60,8 +60,8 @@ self.__precacheManifest = [
     "url": "/augie-book-market/static/media/roboto-latin-300.a1471d1d.woff"
   },
   {
-    "revision": "afef391c755043279402",
-    "url": "/augie-book-market/static/js/main.a647598b.chunk.js"
+    "revision": "d4b0365e8f2247035f3e",
+    "url": "/augie-book-market/static/js/main.ecb9334e.chunk.js"
   },
   {
     "revision": "210a7c781f5a354a0e4985656ab456d9",
@@ -120,7 +120,7 @@ self.__precacheManifest = [
     "url": "/augie-book-market/static/css/2.2420bac5.chunk.css"
   },
   {
-    "revision": "6883d977eae859c73e83ff0721a58e0d",
+    "revision": "f4aa92c905c2dbd30c46a2e76de7c01d",
     "url": "/augie-book-market/index.html"
   }
 ];
