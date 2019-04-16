@@ -32,7 +32,10 @@ const styles = theme => ({
     overflowX: "auto"
   },
   table: {
-    minWidth: 700,
+    minWidth: 700
+  },
+  tableCell: {
+    width: "1px",
     padding: "10px"
   }
 });
@@ -144,13 +147,13 @@ class Home extends Component {
             <Table className={this.classes.table}>
               <TableHead className={this.classes.head}>
                 <TableRow>
-                  <TableCell />
-                  <TableCell>Title</TableCell>
-                  <TableCell>Author</TableCell>
-                  <TableCell>Owner</TableCell>
-                  <TableCell>Price</TableCell>
-                  <TableCell>Date Created</TableCell>
-                  <TableCell />
+                  <TableCell padding="dense" />
+                  <TableCell padding="dense">Title</TableCell>
+                  <TableCell padding="dense">Author</TableCell>
+                  <TableCell padding="dense">Owner</TableCell>
+                  <TableCell padding="dense">Price</TableCell>
+                  <TableCell padding="dense">Date Created</TableCell>
+                  <TableCell padding="dense" />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -160,7 +163,7 @@ class Home extends Component {
                   .map(book => {
                     return (
                       <TableRow key={book.id}>
-                        <TableCell>
+                        <TableCell padding="dense">
                           {book.onSale ? (
                             <Typography style={{ color: "#4caf50" }}>
                               Available
@@ -171,11 +174,11 @@ class Home extends Component {
                             </Typography>
                           )}
                         </TableCell>
-                        <TableCell component="th" scope="row">
+                        <TableCell padding="dense" component="th" scope="row">
                           {book.title}
                         </TableCell>
-                        <TableCell>{book.author}</TableCell>
-                        <TableCell>
+                        <TableCell padding="dense">{book.author}</TableCell>
+                        <TableCell padding="dense">
                           <Grid
                             container
                             spacing={24}
@@ -202,9 +205,13 @@ class Home extends Component {
                             </Grid>
                           </Grid>
                         </TableCell>
-                        <TableCell>{book.price ? book.price : 0}</TableCell>
-                        <TableCell>{book.dateCreated}</TableCell>
-                        <TableCell>
+                        <TableCell padding="dense">
+                          {book.price ? book.price : 0}
+                        </TableCell>
+                        <TableCell padding="dense">
+                          {book.dateCreated}
+                        </TableCell>
+                        <TableCell padding="dense">
                           <Button
                             target="newTab"
                             href={`mailto:${

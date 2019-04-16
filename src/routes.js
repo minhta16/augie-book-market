@@ -1,5 +1,5 @@
 import HomeIcon from "@material-ui/icons/Home";
-import PersonIcon from "@material-ui/icons/Person";
+import ListAltIcon from "@material-ui/icons/ListAlt";
 import AddIcon from "@material-ui/icons/Add";
 import Home from "./views/Home.jsx";
 import Account from "./views/Account.jsx";
@@ -19,9 +19,9 @@ const webRoutes = [
     component: AddListing
   },
   {
-    path: "/account-detail",
-    name: "Account Detail",
-    icon: PersonIcon,
+    path: "/manange-your-listing",
+    name: "Manage Your Listing",
+    icon: ListAltIcon,
     component: Account
   }
 ];
