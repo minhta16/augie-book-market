@@ -12,8 +12,10 @@
     "lodash": "^4.17.11",
     "react": "^16.8.6",
     "react-context-global-state": "^2.1.5",
+    "react-currency-masked-input": "^2.2.0",
     "react-dom": "^16.8.6",
     "react-firebaseui": "^3.1.2",
+    "react-input-mask": "^2.0.4",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "typeface-roboto": "0.0.54"

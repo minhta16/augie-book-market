@@ -23,7 +23,9 @@ import {
   Snackbar,
   IconButton
 } from "@material-ui/core";
+import CurrencyInput from "react-currency-masked-input";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import MoneyIcon from "@material-ui/icons/AttachMoney";
 
 import CloseIcon from "@material-ui/icons/Close";
 
@@ -102,7 +104,8 @@ const styles = theme => ({
     minWidth: 140
   },
   input: {
-    minWidth: 140
+    minWidth: 140,
+    textIndent: 40
   }
 });
 
@@ -267,16 +270,34 @@ class BookCard extends Component {
               alignItems="flex-start"
             >
               <Grid item xs={2}>
-                <TextField
-                  id="price"
-                  label="Price"
-                  variant="outlined"
-                  className={classes.input}
-                  placeholder={props.placeholder}
-                  onKeyUp={e => {
-                    this.setState({ price: e.target.value });
-                  }}
-                />
+                {/* https://github.com/mui-org/material-ui/issues/2932 */}
+                <div style={{ position: "relative", display: "inline-block" }}>
+                  <MoneyIcon
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      top: 15,
+                      width: 20,
+                      height: 20,
+                      color: "#9e9e9e"
+                    }}
+                  />
+                  <TextField
+                    id="price"
+                    label="Price"
+                    variant="outlined"
+                    className={classes.input}
+                    placeholder={props.placeholder}
+                    style={{ textIndent: 0 }}
+                    onKeyUp={e => {
+                      this.setState({ price: e.target.value });
+                    }}
+                    //https://stackoverflow.com/questions/48723887/mask-textfield-component-in-material-ui?noredirect=1&lq=1
+                    InputProps={{
+                      inputComponent: CurrencyInput
+                    }}
+                  />
+                </div>
               </Grid>
               <Grid item xs={2}>
                 <TextField
