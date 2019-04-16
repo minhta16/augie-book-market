@@ -10,15 +10,11 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Menu,
-  MenuItem,
+  Button,
   Typography,
   Divider,
   Grid
 } from "@material-ui/core";
-
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PersonIcon from "@material-ui/icons/Person";
 import orderBy from "lodash/orderBy";
 import firebase from "../firebase";
@@ -41,7 +37,6 @@ const styles = theme => ({
   }
 });
 
-const ITEM_HEIGHT = 48;
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -55,12 +50,9 @@ class Home extends Component {
       books: [],
       booksQuery: "",
       finishedPulling: false,
-      anchorEl: null,
       isSignedIn: false
     };
     this.getDataFromFirebase = this.getDataFromFirebase.bind(this);
-    this.handleMenuClick = this.handleMenuClick.bind(this);
-    this.handleMenuClose = this.handleMenuClose.bind(this);
   }
 
   getDataFromFirebase() {
@@ -76,6 +68,7 @@ class Home extends Component {
             owner: val.owner,
             ownerUID: val.ownerUID,
             ownerPhotoURL: val.ownerPhotoURL,
+            ownerEmail: val.ownerEmail,
             onSale: val.onSale,
             isbn10: val.isbn10,
             isbn13: val.isbn13,
@@ -91,43 +84,6 @@ class Home extends Component {
         })
       );
   }
-
-  updateDataFromFirebase() {
-    this.database
-      .on("value", booksSnapshot => {
-        booksSnapshot.forEach(bookSnapshot => {
-          var val = bookSnapshot.val();
-          var book = {
-            id: bookSnapshot.key,
-            title: val.title,
-            author: val.author,
-            price: val.price,
-            owner: val.owner,
-            ownerUID: val.ownerUID,
-            ownerPhotoURL: val.ownerPhotoURL,
-            onSale: val.onSale,
-            isbn10: val.isbn10,
-            isbn13: val.isbn13,
-            dateCreated: val.dateCreated
-          };
-          this.setState({ books: [...this.state.books, book] });
-          // etc.
-        });
-      })
-      .then(
-        this.setState({
-          finishedPulling: true
-        })
-      );
-  }
-
-  handleMenuClick = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  handleMenuClose = () => {
-    this.setState({ anchorEl: null });
-  };
 
   componentWillMount() {
     firebase.auth().onAuthStateChanged(user => {
@@ -139,8 +95,6 @@ class Home extends Component {
   }
 
   render() {
-    const open = Boolean(this.state.anchorEl);
-
     const books = this.state.booksQuery
       ? orderBy(
           this.state.books.filter(x => {
@@ -251,39 +205,25 @@ class Home extends Component {
                         <TableCell>{book.price ? book.price : 0}</TableCell>
                         <TableCell>{book.dateCreated}</TableCell>
                         <TableCell>
-                          <IconButton
-                            aria-label="More"
-                            aria-owns={open ? "long-menu" : undefined}
-                            aria-haspopup="true"
-                            onClick={this.handleMenuClick}
+                          <Button
+                            target="newTab"
+                            href={`mailto:${
+                              book.ownerEmail
+                            }?subject=From%20Augie%20Book%20Market:%20${encodeURIComponent(
+                              book.title
+                            )}%20by%20${encodeURIComponent(book.author)}
+                            &body=Hi!%0AI%20want%20to%20buy%20${encodeURIComponent(
+                              book.title
+                            )}.`}
                           >
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            id="long-menu"
-                            anchorEl={this.state.anchorEl}
-                            open={open}
-                            onClose={this.handleMenuClose}
-                            PaperProps={{
-                              style: {
-                                maxHeight: ITEM_HEIGHT * 4.5,
-                                width: 200
-                              }
-                            }}
-                          >
-                            <MenuItem
-                              key="Option"
-                              onClick={this.handleMenuClose}
-                            >
-                              Option
-                            </MenuItem>
-                            ))}
-                          </Menu>
+                            <Typography style={{ color: "#2196f3" }}>
+                              Contact
+                            </Typography>
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
                   })}
-                {console.log(books)}
               </TableBody>
             </Table>
           </Paper>

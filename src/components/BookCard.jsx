@@ -173,9 +173,9 @@ class BookCard extends Component {
         owner: firebase.auth().currentUser.displayName,
         ownerUID: firebase.auth().currentUser.uid,
         ownerPhotoURL: firebase.auth().currentUser.photoURL,
+        ownerEmail: firebase.auth().currentUser.email,
         dateCreated: this.state.date
       });
-      console.log(this.state.price);
       this.setState({ open: true });
     }
   }
