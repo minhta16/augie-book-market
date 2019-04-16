@@ -18,6 +18,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
+import { ButtonBase } from "@material-ui/core";
 
 const styles = theme => ({
   root: {
@@ -175,14 +176,11 @@ class PrimarySearchAppBar extends React.Component {
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              className={classes.title}
-              variant="h6"
-              color="inherit"
-              noWrap
-            >
-              Augie Book Market
-            </Typography>
+
+            <ButtonBase>
+              <span style={{ backgroundImage: "url(/bookmarketlogo2.png)" }} />
+            </ButtonBase>
+
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />

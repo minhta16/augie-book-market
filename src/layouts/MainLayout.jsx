@@ -1,20 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
-import AppBar from "@material-ui/core/AppBar";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import {
+  AppBar,
+  ButtonBase,
+  CssBaseline,
+  Divider,
+  Drawer,
+  Hidden,
+  IconButton,
+  List,
+  ListItem,
+  Button,
+  Grid,
+  Toolbar,
+  Typography
+} from "@material-ui/core/";
 import { Route, Link, Switch } from "react-router-dom";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuIcon from "@material-ui/icons/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import { withStyles, MuiThemeProvider } from "@material-ui/core/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { indigo, yellow } from "@material-ui/core/colors";
@@ -118,7 +121,7 @@ class MainLayout extends React.Component {
           <CssBaseline />
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar>
-              <Grid container justify="space-between">
+              <Grid container justify="space-between" alignItems="center">
                 <Grid item>
                   <IconButton
                     color="inherit"
@@ -128,9 +131,13 @@ class MainLayout extends React.Component {
                   >
                     <MenuIcon />
                   </IconButton>
-                  <Typography variant="h6" color="inherit" noWrap>
-                    Augie Book Market
-                  </Typography>
+                  <ButtonBase>
+                    <img
+                      src="/bookmarketlogo4.png"
+                      alt="Augie Book Market"
+                      height="65"
+                    />
+                  </ButtonBase>
                 </Grid>
                 {this.state.isSignedIn ? (
                   <Grid item>
