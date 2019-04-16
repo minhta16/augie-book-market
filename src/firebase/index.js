@@ -1,13 +1,14 @@
 import firebase from "firebase";
+import config from "./config";
 // Initialize Firebase
-var config = {
-  apiKey: "AIzaSyCalcsBPPiKqeweUkLttnlCX763LRP9jJ8",
+var fbConfig = {
+  apiKey: config.apiKey,
   authDomain: "augie-book-market.firebaseapp.com",
   databaseURL: "https://augie-book-market.firebaseio.com",
   projectId: "augie-book-market",
   storageBucket: "augie-book-market.appspot.com",
-  messagingSenderId: "596338877385"
+  messagingSenderId: config.messagingSenderId
 };
-firebase.initializeApp(config);
+firebase.initializeApp(fbConfig);
 
 export default firebase;
