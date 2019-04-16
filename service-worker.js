@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/augie-book-market/precache-manifest.ed0320e63dcc0f739f1e09ab5fb83573.js"
+  "/augie-book-market/precache-manifest.991a43dbf81ca8d3db871bb9890ba812.js"
 );
 
 workbox.clientsClaim();
