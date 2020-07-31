@@ -9,7 +9,7 @@
     "@plan-three/material-ui-autosuggest": "^1.0.0-beta-11",
     "firebase": "^5.9.3",
     "gh-pages": "^2.0.1",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.19",
     "react": "^16.8.6",
     "react-context-global-state": "^2.1.5",
     "react-currency-masked-input": "^2.2.0",
